@@ -31,7 +31,7 @@
 -(void) addChildObject:(NSObject*)child toObject:(NSObject*)parent inDocument:(SVGDocument*) svgDocument;
 -(void) parseContent:(NSMutableString*) content forItem:(NSObject*) item;
 -(BOOL) createdItemShouldStoreContent:(NSObject*) item;
-
+-(void) handleEndElement:(NSString *)name document:(SVGDocument *)svgDocument;
 @end
 
 @interface SVGParser : NSObject {

@@ -19,6 +19,7 @@
 @interface SVGDocument ()
 
 @property (nonatomic, copy) NSString *version;
+@property (nonatomic, retain) NSMutableArray *styleDictStack;
 
 /*! Only preserved for temporary backwards compatibility */
 - (BOOL)parseFileAtPath:(NSString *)aPath;
@@ -39,6 +40,7 @@
 @synthesize height = _height;
 @synthesize version = _version;
 @synthesize viewBoxFrame = _viewBoxFrame;
+@synthesize styleDictStack = _styleDictStack;
 
 @synthesize graphicsGroups, anonymousGraphicsGroups;
 
@@ -250,6 +252,33 @@ static NSMutableArray* _parserExtensions;
 		NSLog(@"[%@] DEBUG INFO: set document viewBox = %@", [self class], NSStringFromCGRect(self.viewBoxFrame));
 	}
 }
+
+- (void)pushStyleDict:(NSDictionary *)dict
+{
+	if (!_styleDictStack) {
+		_styleDictStack = [[NSMutableArray arrayWithCapacity:5] retain];
+	}
+	[_styleDictStack addObject:[dict retain]];
+}
+
+- (void)popStyleDict
+{
+	[[_styleDictStack lastObject] autorelease];
+	[_styleDictStack removeLastObject];
+}
+
+- (NSDictionary *)currentStyleDict
+{
+	NSMutableDictionary *currentStyle = [NSMutableDictionary dictionaryWithCapacity:10];
+	NSDictionary *dict;
+	for (dict in _styleDictStack) {
+		[currentStyle addEntriesFromDictionary:dict];
+	}
+
+	return currentStyle;
+}
+
+
 
 #if NS_BLOCKS_AVAILABLE
 

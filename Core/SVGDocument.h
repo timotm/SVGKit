@@ -52,6 +52,10 @@ typedef void (^SVGElementAggregationBlock)(SVGElement < SVGLayeredElement > * la
 - (id)initWithContentsOfFile:(NSString *)aPath;
 - (id)initWithFrame:(CGRect)frame;
 
+- (void)pushStyleDict:(NSDictionary *)dict;
+- (void)popStyleDict;
+- (NSDictionary *)currentStyleDict;
+
 #if NS_BLOCKS_AVAILABLE
 
 - (void) applyAggregator:(SVGElementAggregationBlock)aggregator;

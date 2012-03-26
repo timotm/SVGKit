@@ -302,6 +302,8 @@ static void startElementSAX (void *ctx, const xmlChar *localname, const xmlChar 
 			parserHandlingTheParentItem = stackItem.parserForThisItem;
 		}
 		
+		[parserHandlingTheParentItem handleEndElement:name document:_document];
+
 		NSLog(@"[%@] DEBUG-PARSER: ended tag (</%@>): telling parser (%@) to add that item to tree-parent = %@", [self class], name, parserHandlingTheParentItem, parentStackItem.item );
 		[parserHandlingTheParentItem addChildObject:stackItem.item toObject:parentStackItem.item inDocument:_document];
 		

@@ -66,6 +66,13 @@ static NSDictionary *elementMap;
 	return result;
 }
 
+- (void)handleEndElement:(NSString *)name document:(SVGDocument*) svgDocument {
+	if (![name isEqualToString:@"svg"]) {
+		[svgDocument popStyleDict];
+	}
+}
+
+
 - (NSObject*) handleStartElement:(NSString *)name document:(SVGDocument*) svgDocument xmlns:(NSString*) prefix attributes:(NSMutableDictionary *)attributes {
 	if( [[self supportedNamespaces] containsObject:prefix] )
 	{
@@ -90,10 +97,16 @@ static NSDictionary *elementMap;
 		
 		if ((style = [attributes objectForKey:@"style"])) {
 			[attributes removeObjectForKey:@"style"];
-			[attributes addEntriesFromDictionary:[SVGParser NSDictionaryFromCSSAttributes:style]];
+			NSDictionary *styleDict = [SVGParser NSDictionaryFromCSSAttributes:style];
+			[svgDocument pushStyleDict:styleDict];
 		}
-		
+		else {
+			[svgDocument pushStyleDict:[NSDictionary dictionary]];
+		}
+		[attributes addEntriesFromDictionary:[svgDocument currentStyleDict]];
+
 		SVGElement *element = [[elementClass alloc] initWithDocument:svgDocument name:name];
+        
 		[element parseAttributes:attributes];
 		
 		return element;
